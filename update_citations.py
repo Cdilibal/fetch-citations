@@ -1,7 +1,7 @@
 import requests, json, os
 
 API_KEY = os.getenv("SERPAPI_KEY")
-SCHOLAR_ID = "ABC123"
+SCHOLAR_ID = "czJoNWIAAAAJ"
 
 def get_citations():
     url = f"https://serpapi.com/search.json?engine=google_scholar_author&author_id={SCHOLAR_ID}&api_key={API_KEY}"
