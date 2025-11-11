@@ -3,6 +3,9 @@ name: Update Google Scholar Citations
 env:
   SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
 
+permissions:
+  contents: write
+
 on:
   schedule:
     - cron: '0 5 * * *'  # every day at 5 AM UTC
