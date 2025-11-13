@@ -28,4 +28,4 @@ jobs:
           git config user.email github-actions@github.com
           git add citations.json
           git commit -m "Update citations"
-          git push
+          git push origin main --force
