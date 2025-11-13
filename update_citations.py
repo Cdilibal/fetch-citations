@@ -1,3 +1,5 @@
+import os, requests, json
+
 API_KEY = os.getenv("SERPAPI_KEY")
 SCHOLAR_ID = "czJoNWIAAAAJ" 
 def get_citations(): 
