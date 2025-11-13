@@ -7,7 +7,8 @@ def get_citations():
     url = f"https://serpapi.com/search.json?engine=google_scholar_author&author_id={SCHOLAR_ID}&api_key={API_KEY}"
     r = requests.get(url)
     data = r.json()
-    return data.get("cited_by", {}).get("table", [{}])[0].get("citations", {}).get("all", 0), data.get("cited_by", {}).get("table", [{}])[0].get("h_index", {}).get("all", 0)
+    table = data.get("cited_by", {}).get("table", [{}])[0]
+    return table.get("citations", {}).get("all", 0), table.get("h_index", {}).get("all", 0)
 
 def main():
     citations, h_index = get_citations()
