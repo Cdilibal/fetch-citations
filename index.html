@@ -90,13 +90,28 @@
             text-transform: uppercase;
         }
 
-        .citation-block {
+        .stats-row {
             position: relative;
             z-index: 1;
             display: flex;
+            align-items: center;
+            gap: 0;
+            margin-bottom: 16px;
+        }
+
+        .stat-item {
+            display: flex;
             align-items: baseline;
             gap: 8px;
-            margin-bottom: 16px;
+            flex: 1;
+        }
+
+        .stat-divider {
+            width: 1px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 0 24px;
+            flex-shrink: 0;
         }
 
         .citation-count {
@@ -273,9 +288,16 @@
             </div>
         </div>
 
-        <div class="citation-block">
-            <div class="citation-count loading" id="count"></div>
-            <span class="citation-label">citations</span>
+        <div class="stats-row">
+            <div class="stat-item">
+                <div class="citation-count loading" id="count"></div>
+                <span class="citation-label">citations</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <div class="citation-count loading" id="hindex"></div>
+                <span class="citation-label">h-index</span>
+            </div>
         </div>
 
         <div class="footer">
@@ -288,15 +310,15 @@
     </div>
 
     <script>
-        const DATA_URL = 'https://raw.githubusercontent.com/Cdilibal/fetch-citations/main/citations.json';
+        const CITATIONS_URL = 'https://raw.githubusercontent.com/Cdilibal/fetch-citations/main/citations.json';
+        const HINDEX_URL = 'https://raw.githubusercontent.com/Cdilibal/fetch-citations/main/h_index.json';
 
-        async function fetchCitations() {
+        async function fetchJSON(url) {
             try {
-                const res = await fetch(DATA_URL, { cache: 'no-store' });
-                const data = await res.json();
-                return data.citations;
+                const res = await fetch(url, { cache: 'no-store' });
+                return await res.json();
             } catch (err) {
-                console.error('Failed to fetch citations:', err);
+                console.error('Failed to fetch:', err);
                 return null;
             }
         }
@@ -325,17 +347,30 @@
 
         async function init() {
             const countEl = document.getElementById('count');
+            const hindexEl = document.getElementById('hindex');
             const widget = document.getElementById('widget');
 
-            const citations = await fetchCitations();
+            const [citData, hData] = await Promise.all([
+                fetchJSON(CITATIONS_URL),
+                fetchJSON(HINDEX_URL)
+            ]);
 
-            if (citations !== null) {
+            widget.classList.add('loaded');
+
+            if (citData !== null) {
                 countEl.classList.remove('loading');
-                widget.classList.add('loaded');
-                animateCount(countEl, citations);
+                animateCount(countEl, citData.citations);
             } else {
                 countEl.classList.remove('loading');
                 countEl.textContent = '—';
+            }
+
+            if (hData !== null) {
+                hindexEl.classList.remove('loading');
+                animateCount(hindexEl, hData.h_index, 800);
+            } else {
+                hindexEl.classList.remove('loading');
+                hindexEl.textContent = '—';
             }
         }
 
